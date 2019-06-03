@@ -1,5 +1,5 @@
-# lux
-Graphics Final Project
+#Graphics Final Project
 Claire Liu
 
-Add primitive shapes: wedge/pyramid, cone
+## Features:
+- [ ] Add primitive shapes: wedge/pyramid, cone
