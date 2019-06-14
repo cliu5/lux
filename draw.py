@@ -1,6 +1,7 @@
 from display import *
 from matrix import *
 from gmath import *
+import re
 
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
@@ -115,6 +116,75 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
             #            screen, zbuffer, color)
         point+= 3
 
+def mesh_V(filename):
+    points=[]
+    f=open(filename,'r')
+    for line in f.readlines():
+        line = re.sub(' +', ' ', line).split(" ")
+        if line[0]=='v':
+            points.append([float(line[1]),float(line[2]),float(line[3])])
+    f.close()
+    return points
+
+def mesh_F(edges,filename):
+    points=mesh_V(filename)
+    f=open(filename,'r')
+    for line in f.readlines():
+        line = re.sub(' +', ' ', line).split(" ")
+        if line[0]=='f':
+            count=2
+            verts=line[1:]
+            while count<len(verts):
+                p0=int(verts[0])-1
+                p1=int(verts[count-1])-1
+                p2=int(verts[count])-1
+                add_polygon(edges, points[p0][0] * 20, points[p0][1] * 20, points[p0][2] * 20,
+                                       points[p1][0] * 20, points[p1][1] * 20, points[p1][2] * 20,
+                                       points[p2][0] * 20, points[p2][1] * 20, points[p2][2] * 20)
+                count += 1
+    f.close()
+
+def add_pyramid( polygons, x, y, z, width, height, depth ):
+    x1 = x + width
+    avg_X=(x1+x)/2
+    y1 = y - height
+    z1 = z - depth
+    avg_Z=(z1+z)/2
+
+    #front
+    add_polygon(polygons, x, y, z, x1, y, z, avg_X, y1, avg_Z)
+
+    #back
+    add_polygon(polygons, x, y, z1, avg_X, y1, avg_Z, x1, y, z1)
+
+    #right side
+    add_polygon(polygons, x1, y, z, x1, y, z1, avg_X, y1, avg_Z)
+    
+    #left side
+    add_polygon(polygons, x, y, z1, x, y, z, avg_X, y, avg_Z)
+
+    #bottom
+    add_polygon(polygons, x1, y, z1, x1, y, z, x, y, z1)
+    add_polygon(polygons, x, y, z1, x1, y, z, x, y, z)
+
+def add_cone( edges, cx, cy, cz, r, h, step):
+    x0=r+cx
+    y0=cy
+    count=1
+
+    while count<=step:
+        factor=float(count)/step
+        x1=r*math.cos(2*math.pi*factor)
+        x1+=cx
+        y1=r*math.sin(2*math.pi*factor)
+        y1+=cy
+
+        add_polygon(edges,x0,y0,cz,x1,y1,cz,cx,cy,cz+h)
+        add_polygon(edges,x0,y0,cz,cx,cy,cz,x1,y1,cz)
+        x0=x1
+        y0=y1
+        count+=1
+    
 
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width

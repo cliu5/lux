@@ -14,6 +14,8 @@ tokens = (
     "AMBIENT",
     "TORUS",
     "SPHERE",
+    "CONE",
+    "PYRAMID",
     "BOX", 
     "LINE", 
     "MESH", 
@@ -53,6 +55,8 @@ reserved = {
     "ambient" : "AMBIENT",
     "torus" : "TORUS",
     "sphere" : "SPHERE",
+    "cone": "CONE",
+    "pyramid": "PYRAMID",
     "box" : "BOX",
     "line" : "LINE",
     "mesh" : "MESH",
@@ -179,6 +183,23 @@ def p_command_sphere(p):
     cmd['args'] = p[arg_start:arg_start+4]
     commands.append(cmd)
 
+def p_command_cone(p):
+    """command : CONE NUMBER NUMBER NUMBER NUMBER NUMBER
+               | CONE SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER
+               | CONE NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL
+               | CONE SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL"""
+    cmd = {'op' : p[1], 'constants' : None, 'cs' : None, 'args':[]}
+    arg_start = 2
+    if isinstance(p[2], str):
+        cmd['constants'] = p[2]
+        arg_start = 3
+    if len(p) == 8 and isinstance(p[7], str):
+        cmd['cs'] = p[7]
+    if len(p) == 9 and isinstance(p[8], str):
+          cmd['cs'] = p[8]
+    cmd['args'] = p[arg_start:arg_start+5]
+    commands.append(cmd)    
+
 def p_command_torus(p):
     """command : TORUS NUMBER NUMBER NUMBER NUMBER NUMBER
                | TORUS NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL
@@ -212,7 +233,25 @@ def p_command_box(p):
           cmd['cs'] = p[9]
     cmd['args'] = p[arg_start:arg_start+6]
     commands.append(cmd)
-
+    
+def p_command_pyramid(p):
+    """command : PYRAMID NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+               | PYRAMID NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL
+               | PYRAMID SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+               | PYRAMID SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL"""
+    cmd = {'op' : p[1], 'constants' : None, 'cs' : None, 'args':[]}
+    arg_start = 2
+    if isinstance(p[2], str):
+        cmd['constants'] = p[2]
+        arg_start = 3
+    if len(p) == 9 and isinstance(p[8], str):
+        cmd['cs'] = p[8]
+    if len(p) == 10 and isinstance(p[9], str):
+          cmd['cs'] = p[9]
+    cmd['args'] = p[arg_start:arg_start+6]
+    commands.append(cmd)
+    
+    
 def p_command_line(p):
     """command : LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
                | LINE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL
@@ -331,10 +370,11 @@ def p_command_generate_rayfiles(p):
     commands.append({'op':p[1], 'args':None})
 
 def p_command_mesh(p):
-    """command : MESH CO TEXT
-               | MESH SYMBOL CO TEXT
-               | MESH CO TEXT SYMBOL
-               | MESH SYMBOL CO TEXT SYMBOL"""
+    """command : MESH TEXT TEXT
+               | MESH CO TEXT TEXT
+               | MESH SYMBOL CO TEXT TEXT
+               | MESH CO TEXT TEXT SYMBOL
+               | MESH SYMBOL CO TEXT TEXT SYMBOL"""
     cmd = {'op':p[1], 'args' : [], 'cs':None, 'constants':None}
     arg_start = 2
     if isinstance(p[2], str):

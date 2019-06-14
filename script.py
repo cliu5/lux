@@ -18,20 +18,21 @@ def first_pass( commands ):
 
     name = ''
     num_frames = 1
-
+    print("start")
     for c in commands:
+        print(c)
         if c['op'] == 'frames':
             num_frames = int(c['args'][0])
 
         if c['op'] == 'basename':
             name = c['args'][0]
-
-    if num_frames == 1:
-        return
     
+    #if num_frames == 1:
+ #       return 
+    print("end1")
     if name == '':
         name = 'default'
-
+    print("end")
     return (name, num_frames)
 
 """======== second_pass( commands ) ==========
@@ -100,8 +101,8 @@ def run(filename):
                           'green': [0.2, 0.5, 0.5],
                           'blue': [0.2, 0.5, 0.5]}]
     reflect = '.white'
-
-    (name, num_frames) = first_pass(commands)
+    print(type(commands))
+    (name, num_frames) = first_pass(commands[:])
     frames = second_pass(commands, num_frames)
 
     tmp = new_matrix()
@@ -144,6 +145,33 @@ def run(filename):
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
                 tmp = []
                 reflect = '.white'
+                
+            elif c=='mesh':
+                mesh_F(tmp,args[0]+".obj")
+                matrix_mult(stack[-1],tmp)
+                draw_polygons(tmp,screen,zbuffer,view,ambient,light,symbols,reflect)
+                tmp=[]
+
+            elif c=='cone':
+                if command['constants']:
+                    reflect = command['constants']
+                add_cone(tmp,
+                          args[0], args[1], args[2], args[3], args[4], step_3d)
+                matrix_mult( stack[-1], tmp )
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                tmp = []
+                reflect = '.white'
+                
+            elif c=='pyramid':
+                if command['constants']:
+                    reflect = command['constants']
+                add_cone(tmp,
+                          args[0], args[1], args[2], args[3], args[4], args[5], step_3d)
+                matrix_mult( stack[-1], tmp )
+                draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
+                tmp = []
+                reflect = '.white'
+                
             elif c == 'torus':
                 if command['constants']:
                     reflect = command['constants']
