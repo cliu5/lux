@@ -1,3 +1,13 @@
-//push
-mesh :shuttle.obj
+frames 50
+basename simple_50
+push
+move 250 250 250
+rotate y 50 rotator
+rotate z 100 rotator
+rotate x 45 rotator
+scale .15 .15 .15
+mesh :magnolia.obj
+vary rotator 0 49 0 1
+vary rotator 0 24 0 1
+vary rotator 25 49 1 0
 save test4.png
