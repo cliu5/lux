@@ -1,6 +1,7 @@
 # Graphics Final Project
-Claire Liu
+Team Member(s): Claire Liu
+Team Name: Claire Liu
 
 ## Features:
-- [ ] Add primitive shapes: wedge/pyramid, cone
-- [ ] Added mesh feature
+- Added mesh feature
+- Added primitive shapes: pyramid and cone (MDL takes pyramid command and cone command)
