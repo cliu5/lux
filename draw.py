@@ -2,7 +2,7 @@ from display import *
 from matrix import *
 from gmath import *
 import re
-
+#Pacy&Kevin from last year helped me w this homework
 def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
     if x0 > x1:
         tx = x0
