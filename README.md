@@ -1,5 +1,5 @@
 # Graphics Final Project
-Team Member(s): Claire Liu
+Team Member(s): Claire Liu <br>
 Team Name: Claire Liu
 
 ## Features:
